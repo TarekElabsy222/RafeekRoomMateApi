@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="RafeekRoomMate.Api/RafeekRoomMate.Api.csproj" />
+  <Project Path="RafeekRoomMate.Application/RafeekRoomMate.Application.csproj" />
+  <Project Path="RafeekRoomMate.Domain/RafeekRoomMate.Domain.csproj" />
+  <Project Path="RafeekRoomMate.Infrastructure/RafeekRoomMate.Infrastructure.csproj" />
+</Solution>
