@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using RafeekRoomMate.Application.Common.Interfaces;
+using RafeekRoomMate.Application.Common.Options;
 using RafeekRoomMate.Application.Features.Authentication.Common;
 using RafeekRoomMate.Domain.Repositories.Interfaces;
 using RafeekRoomMate.Infrastructure.Authentication;
@@ -15,6 +16,7 @@ using RafeekRoomMate.Infrastructure.Persistence.Identity;
 using RafeekRoomMate.Infrastructure.Persistence.Seed;
 using RafeekRoomMate.Infrastructure.Repositories.Implementations;
 using RafeekRoomMate.Infrastructure.Services;
+using RafeekRoomMate.Infrastructure.Storage;
 using System.Text;
 
 namespace RafeekRoomMate.Infrastructure.DependencyInjection
@@ -93,7 +95,10 @@ namespace RafeekRoomMate.Infrastructure.DependencyInjection
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
                 services.AddHttpContextAccessor();
                 services.AddScoped<IFileStorageService, LocalFileStorageService>();
-
+                services.Configure<ProfileImageOptions>(configuration.GetSection("Storage:ProfileImage"));
+                services.Configure<RoomImageOptions>(configuration.GetSection(RoomImageOptions.SectionName));
+                services.AddSingleton<IImageValidator,ProfileImageValidator>();
+                services.AddScoped<IRoomImageValidator,RoomImageValidator>();
                 #endregion
 
                 return services;

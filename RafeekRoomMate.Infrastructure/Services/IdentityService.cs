@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RafeekRoomMate.Application.Common.Models;
 using RafeekRoomMate.Application.Features.Authentication.Common;
 using RafeekRoomMate.Infrastructure.Persistence.Context;
@@ -104,6 +105,26 @@ namespace RafeekRoomMate.Infrastructure.Services
             var result = await _userManager.AddToRoleAsync(user,role);
 
             return result.Succeeded;
+        }
+
+        public async Task<IReadOnlyCollection<AuthUserDto>> GetUsersAsync(IReadOnlyCollection<Guid> userIds,CancellationToken cancellationToken = default)
+        {
+            if (userIds.Count == 0)
+            {
+                return Array.Empty<AuthUserDto>();
+            }
+
+            var users = await _userManager.Users
+                .Where(x => userIds.Contains(x.Id))
+                .Select(x => new AuthUserDto
+                {
+                    Id = x.Id,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email!
+                }).ToListAsync(cancellationToken);
+
+            return users;
         }
         #endregion
     }

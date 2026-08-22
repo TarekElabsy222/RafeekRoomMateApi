@@ -2,6 +2,7 @@
 using Microsoft.OpenApi;
 using RafeekRoomMate.Application.DependencyInjections;
 using RafeekRoomMate.Infrastructure.DependencyInjection;
+using System.Reflection;
 
 namespace RafeekRoomMate.Api
 {
@@ -20,6 +21,10 @@ namespace RafeekRoomMate.Api
             #region register services
             builder.Services.AddSwaggerGen(options =>
             {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                options.IncludeXmlComments(xmlPath);
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Rafeek RoomMate API",
@@ -42,7 +47,7 @@ namespace RafeekRoomMate.Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseAuthentication();
 
             app.UseAuthorization();

@@ -13,16 +13,18 @@ namespace RafeekRoomMate.Application.Features.Profiles.Commands.UploadProfileIma
         private readonly IRepository<UserProfile> _userProfileRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IImageValidator _imageValidator;
         private readonly IUnitOfWork _unitOfWork;
         #endregion
 
         #region constructor
-        public UploadProfileImageCommandHandler(IRepository<UserProfile> userProfileRepository, ICurrentUserService currentUserService, IFileStorageService fileStorageService, IUnitOfWork unitOfWork)
+        public UploadProfileImageCommandHandler(IRepository<UserProfile> userProfileRepository, ICurrentUserService currentUserService, IFileStorageService fileStorageService, IUnitOfWork unitOfWork, IImageValidator imageValidator)
         {
             _userProfileRepository = userProfileRepository;
             _currentUserService = currentUserService;
             _fileStorageService = fileStorageService;
             _unitOfWork = unitOfWork;
+            _imageValidator = imageValidator;
         }
         #endregion
 
@@ -46,6 +48,15 @@ namespace RafeekRoomMate.Application.Features.Profiles.Commands.UploadProfileIma
             {
                 return Result<UserProfileDto>.Failure( "PROFILE_NOT_FOUND", "User profile has not been completed.");
             }
+
+            // check valid
+            var isValid = await _imageValidator.IsValidAsync( command.Stream,command.FileName, command.ContentType, command.Length,  cancellationToken);
+
+            if (!isValid)
+            {
+                return Result<UserProfileDto>.Failure( "INVALID_PROFILE_IMAGE",  "Invalid profile image.");
+            }
+
             // 3. Upload new image
             var imageKey = await _fileStorageService.UploadAsync(command.Stream, command.FileName, command.ContentType,
                 $"profiles/{userId.Value}",cancellationToken);

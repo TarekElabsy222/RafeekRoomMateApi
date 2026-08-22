@@ -29,6 +29,8 @@ namespace RafeekRoomMate.Infrastructure.Services
 
             var directory = Path.Combine(uploadsRoot, relativeFolder);
 
+            Directory.CreateDirectory(directory);
+
             var filePath = Path.Combine(directory, generatedFileName);
 
             await using var fileStream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 64 * 1024, useAsync: true);

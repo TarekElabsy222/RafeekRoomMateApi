@@ -15,8 +15,12 @@ namespace RafeekRoomMate.Application.Features.Authentication.Common
 
         Task<AuthUserDto?> GetUserAsync( Guid userId, CancellationToken cancellationToken = default);
 
+        Task<IReadOnlyCollection<AuthUserDto>> GetUsersAsync( IReadOnlyCollection<Guid> userIds,CancellationToken cancellationToken = default);
+
         Task<bool> CheckPasswordAsync( Guid userId, string password, CancellationToken cancellationToken = default);
 
         Task<bool> AddToRoleAsync( Guid userId, string role, CancellationToken cancellationToken = default);
+
+
     }
 }

@@ -162,6 +162,165 @@ namespace RafeekRoomMate.Infrastructure.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.Room", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTime?>("AvailableFrom")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("GenderPreference")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaximumOccupants")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("MonthlyRent")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("RoomType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Area");
+
+                    b.HasIndex("City");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("GenderPreference");
+
+                    b.HasIndex("RoomType");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("City", "Area", "Status");
+
+                    b.ToTable("Rooms", (string)null);
+                });
+
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomFavorite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId", "RoomId")
+                        .IsUnique();
+
+                    b.ToTable("RoomFavorites", (string)null);
+                });
+
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ImageKey")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("RoomId", "DisplayOrder");
+
+                    b.ToTable("RoomImages", (string)null);
+                });
+
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LeftAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("RoomId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("RoomMembers", (string)null);
+                });
+
             modelBuilder.Entity("RafeekRoomMate.Domain.Entities.UserProfile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -413,6 +572,39 @@ namespace RafeekRoomMate.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomFavorite", b =>
+                {
+                    b.HasOne("RafeekRoomMate.Domain.Entities.Room", "Room")
+                        .WithMany("Favorites")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomImage", b =>
+                {
+                    b.HasOne("RafeekRoomMate.Domain.Entities.Room", "Room")
+                        .WithMany("Images")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomMember", b =>
+                {
+                    b.HasOne("RafeekRoomMate.Domain.Entities.Room", "Room")
+                        .WithMany("Members")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
             modelBuilder.Entity("RafeekRoomMate.Domain.Entities.UserProfile", b =>
                 {
                     b.HasOne("RafeekRoomMate.Infrastructure.Persistence.Identity.User", null)
@@ -420,6 +612,15 @@ namespace RafeekRoomMate.Infrastructure.Migrations
                         .HasForeignKey("RafeekRoomMate.Domain.Entities.UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.Room", b =>
+                {
+                    b.Navigation("Favorites");
+
+                    b.Navigation("Images");
+
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }
