@@ -99,6 +99,7 @@ namespace RafeekRoomMate.Infrastructure.DependencyInjection
                 services.Configure<RoomImageOptions>(configuration.GetSection(RoomImageOptions.SectionName));
                 services.AddSingleton<IImageValidator,ProfileImageValidator>();
                 services.AddScoped<IRoomImageValidator,RoomImageValidator>();
+                services.AddScoped<IRoomAppointmentReader,RoomAppointmentReader>();
                 #endregion
 
                 return services;

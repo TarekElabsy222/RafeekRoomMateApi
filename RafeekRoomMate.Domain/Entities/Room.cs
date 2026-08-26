@@ -46,6 +46,25 @@ namespace RafeekRoomMate.Domain.Entities
 
             UpdatedAt = DateTime.UtcNow;
         }
+        public void Close()
+        {
+            Status = RoomStatus.Closed;
+        }
+
+        public void Reopen()
+        {
+            Status = RoomStatus.Available;
+        }   
+
+        public void MarkAsFull()
+        {
+            Status = RoomStatus.Full;
+        }
+
+        public void MarkAsAvailable()
+        {
+            Status = RoomStatus.Available;
+        }
 
         public Guid Id { get; private set; }
 
@@ -84,5 +103,6 @@ namespace RafeekRoomMate.Domain.Entities
 
         public ICollection<RoomMember> Members { get; private set; } = new List<RoomMember>();
         public ICollection<RoomFavorite> Favorites { get; private set; } = new List<RoomFavorite>();
+        public ICollection<RoomAppointment> Appointments { get; private set; } = new List<RoomAppointment>();
     }
 }

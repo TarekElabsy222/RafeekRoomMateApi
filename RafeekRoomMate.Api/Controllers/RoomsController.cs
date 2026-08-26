@@ -4,9 +4,11 @@ using RafeekRoomMate.Application.Features.RoomFavorites.Commands.AddRoomFavorite
 using RafeekRoomMate.Application.Features.RoomFavorites.Commands.RemoveRoomFavorite;
 using RafeekRoomMate.Application.Features.RoomFavorites.Queries.GetMyFavoriteRooms;
 using RafeekRoomMate.Application.Features.Rooms.Commands.AddRoomImage;
+using RafeekRoomMate.Application.Features.Rooms.Commands.CloseRoom;
 using RafeekRoomMate.Application.Features.Rooms.Commands.CreateRoom;
 using RafeekRoomMate.Application.Features.Rooms.Commands.DeleteRoom;
 using RafeekRoomMate.Application.Features.Rooms.Commands.DeleteRoomImage;
+using RafeekRoomMate.Application.Features.Rooms.Commands.ReopenRoom;
 using RafeekRoomMate.Application.Features.Rooms.Commands.UpdateRoom;
 using RafeekRoomMate.Application.Features.Rooms.Queries.GetRoomDetails;
 using RafeekRoomMate.Application.Features.Rooms.Queries.GetRooms;
@@ -28,10 +30,12 @@ namespace RafeekRoomMate.Api.Controllers
         private readonly AddRoomFavoriteCommandHandler _addRoomFavoriteCommandHandler;
         private readonly RemoveRoomFavoriteCommandHandler _removeRoomFavoriteCommandHandler;
         private readonly GetMyFavoriteRoomsQueryHandler _getMyFavoriteRoomsQueryHandler;
+        private readonly ReopenRoomCommandHandler _reopenRoomHandler;
+        private readonly CloseRoomCommandHandler _closeRoomHandler;
         #endregion
 
         #region constructor
-        public RoomsController(CreateRoomCommandHandler createRoomHandler, AddRoomImageCommandHandler addRoomImageHandler, GetRoomDetailsQueryHandler getRoomDetailsQueryHandler, GetRoomsQueryHandler getRoomsQueryHandler, UpdateRoomCommandHandler updateRoomCommandHandler, DeleteRoomCommandHandler deleteRoomCommandHandler, DeleteRoomImageCommandHandler deleteRoomImageCommandHandler, AddRoomFavoriteCommandHandler addRoomFavoriteCommandHandler, RemoveRoomFavoriteCommandHandler removeRoomFavoriteCommandHandler, GetMyFavoriteRoomsQueryHandler getMyFavoriteRoomsQueryHandler)
+        public RoomsController(CreateRoomCommandHandler createRoomHandler, AddRoomImageCommandHandler addRoomImageHandler, GetRoomDetailsQueryHandler getRoomDetailsQueryHandler, GetRoomsQueryHandler getRoomsQueryHandler, UpdateRoomCommandHandler updateRoomCommandHandler, DeleteRoomCommandHandler deleteRoomCommandHandler, DeleteRoomImageCommandHandler deleteRoomImageCommandHandler, AddRoomFavoriteCommandHandler addRoomFavoriteCommandHandler, RemoveRoomFavoriteCommandHandler removeRoomFavoriteCommandHandler, GetMyFavoriteRoomsQueryHandler getMyFavoriteRoomsQueryHandler, ReopenRoomCommandHandler reopenRoomHandler, CloseRoomCommandHandler closeRoomHandler)
         {
             _createRoomHandler = createRoomHandler;
             _addRoomImageHandler = addRoomImageHandler;
@@ -43,6 +47,8 @@ namespace RafeekRoomMate.Api.Controllers
             _addRoomFavoriteCommandHandler = addRoomFavoriteCommandHandler;
             _removeRoomFavoriteCommandHandler = removeRoomFavoriteCommandHandler;
             _getMyFavoriteRoomsQueryHandler = getMyFavoriteRoomsQueryHandler;
+            _reopenRoomHandler = reopenRoomHandler;
+            _closeRoomHandler = closeRoomHandler;
         }
         #endregion
 
@@ -209,6 +215,26 @@ namespace RafeekRoomMate.Api.Controllers
         public async Task<IActionResult> GetMyFavorites( [FromQuery] GetMyFavoriteRoomsQuery query, CancellationToken cancellationToken)
         {
             var result = await _getMyFavoriteRoomsQueryHandler.HandleAsync( query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpPatch("{roomId:guid}/close")]
+        [Authorize]
+        public async Task<IActionResult> Close( Guid roomId, CancellationToken cancellationToken)
+        {
+           
+            var result = await _closeRoomHandler.HandleAsync( roomId, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpPatch("{roomId:guid}/reopen")]
+        [Authorize]
+        public async Task<IActionResult> Reopen(Guid roomId, CancellationToken cancellationToken)
+        {
+
+            var result = await _reopenRoomHandler.HandleAsync(roomId, cancellationToken);
 
             return Ok(result);
         }

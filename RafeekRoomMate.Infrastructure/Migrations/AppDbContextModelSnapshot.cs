@@ -235,6 +235,58 @@ namespace RafeekRoomMate.Infrastructure.Migrations
                     b.ToTable("Rooms", (string)null);
                 });
 
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomAppointment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime>("RequestedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<TimeSpan>("RequestedEndTime")
+                        .HasColumnType("interval");
+
+                    b.Property<TimeSpan>("RequestedStartTime")
+                        .HasColumnType("interval");
+
+                    b.Property<DateTime?>("RespondedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("RoomId", "UserId", "Status");
+
+                    b.ToTable("RoomAppointments", (string)null);
+                });
+
             modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomFavorite", b =>
                 {
                     b.Property<Guid>("Id")
@@ -572,6 +624,17 @@ namespace RafeekRoomMate.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomAppointment", b =>
+                {
+                    b.HasOne("RafeekRoomMate.Domain.Entities.Room", "Room")
+                        .WithMany("Appointments")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
             modelBuilder.Entity("RafeekRoomMate.Domain.Entities.RoomFavorite", b =>
                 {
                     b.HasOne("RafeekRoomMate.Domain.Entities.Room", "Room")
@@ -616,6 +679,8 @@ namespace RafeekRoomMate.Infrastructure.Migrations
 
             modelBuilder.Entity("RafeekRoomMate.Domain.Entities.Room", b =>
                 {
+                    b.Navigation("Appointments");
+
                     b.Navigation("Favorites");
 
                     b.Navigation("Images");

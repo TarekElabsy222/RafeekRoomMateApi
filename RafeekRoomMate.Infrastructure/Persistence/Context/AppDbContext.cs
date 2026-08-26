@@ -13,6 +13,7 @@ namespace RafeekRoomMate.Infrastructure.Persistence.Context
         public DbSet<RoomMember> RoomMembers => Set<RoomMember>();
         public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
         public DbSet<RoomFavorite> RoomFavorites => Set<RoomFavorite>();
+        public DbSet<RoomAppointment> Appointments=> Set<RoomAppointment>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
